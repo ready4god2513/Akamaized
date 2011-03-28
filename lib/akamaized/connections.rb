@@ -27,17 +27,17 @@ module Akamaized
     include AkamaizedException
     
     def initialize(config = {})
-      Config.new(config)
+      @config = Config.new(config)
       create_connection
     end
     
     
     def create_connection
       begin
-        @connection = Net::FTP.new(Config.host)
+        @connection = Net::FTP.new(@config.host)
         @connection.passive = true
-        @connection.login(Config.username, Config.password)
-        @connection.chdir(Config.base_dir) if Config.base_dir
+        @connection.login(@config.username, @config.password)
+        @connection.chdir(@config.base_dir) if @config.base_dir
       rescue Exception => e
         raise connection_error
       end
