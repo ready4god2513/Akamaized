@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Brandon Hansen, Eric Casequin"]
   s.email       = ["brandon@morethanaprogrammer.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/ready4god2513/Akamaized"
   s.summary     = %q{Manage data and files on Akamai's CDN}
   s.description = %q{Manage data and files on Akamai's CDN}
 
