@@ -64,6 +64,8 @@ module Akamaized
         @connection.put(temp.path, "#{file}.new")
         @connection.rename("#{file}.new", file)
         
+        temp.close
+        
         raise put_error(file) if !exists?(file, location)
       end
     end
