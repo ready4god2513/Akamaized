@@ -8,16 +8,16 @@ module Akamaized
     
     def initialize(opts = {})
       opts = {
-        "username" => "",
-        "password" => "",
-        "host" => "",
-        "base_dir" => ""
+        :username => "",
+        :password => "",
+        :host => "",
+        :base_dir => ""
       }.merge(opts)
       
-      self.username = opts["username"]
-      self.password = opts["password"]
-      self.host = opts["host"]
-      self.base_dir = opts["base_dir"]
+      self.username = opts[:username]
+      self.password = opts[:password]
+      self.host = opts[:host]
+      self.base_dir = opts[:base_dir]
     end
     
   end
