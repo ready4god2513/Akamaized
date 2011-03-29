@@ -3,4 +3,4 @@
 Gemfile.lock
 pkg/*
 conf
-config/akamai.yml
+config/*

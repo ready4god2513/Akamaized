@@ -8,23 +8,23 @@ module Akamaized
     
     def initialize(opts = {})
       opts = {
-        username: nil,
-        password: nil,
-        host: nil,
-        base_dir: nil
+        "username" => "",
+        "password" => "",
+        "host" => "",
+        "base_dir" => ""
       }.merge(opts)
       
-      self.username = opts[:username]
-      self.password = opts[:password]
-      self.host = opts[:host]
-      self.base_dir = opts[:base_dir]
+      self.username = opts["username"]
+      self.password = opts["password"]
+      self.host = opts["host"]
+      self.base_dir = opts["base_dir"]
     end
     
   end
   
   class Connection
     
-    include AkamaizedException
+    include Exception
     
     def initialize(config = {})
       @config = Config.new(config)
@@ -38,16 +38,21 @@ module Akamaized
         @connection.passive = true
         @connection.login(@config.username, @config.password)
         @connection.chdir(@config.base_dir) if @config.base_dir
-      rescue Exception => e
-        raise connection_error
+      rescue IOError, SystemCallError, Net::FTPError => e
+        raise ConnectionError.new(e.message)
       end
     end
     
     
     # Check to see if a file 
     def exists?(file, location = nil)
-      @connection.chdir(location) unless location.nil?
-      !@connection.nlist(file).empty?
+      begin
+        @connection.chdir(location) unless location.nil?
+        !@connection.nlst(file).empty?
+      rescue Net::FTPPermError => e
+        return false if e.message.include?("not exist")
+        raise
+      end
     end
     
     
@@ -55,19 +60,15 @@ module Akamaized
     # Will raise an exception if unable to push the file up
     # or the file is empty after upload (0 bytes)
     def put(file, location = nil)
-      Tempfile.open(file) do |temp|
-        temp.write(yield)
-        temp.flush
-        
-        @connection.chdir(location) unless location.nil?
-        
-        @connection.put(temp.path, "#{file}.new")
-        @connection.rename("#{file}.new", file)
-        
-        temp.close
-        
-        raise put_error(file) if !exists?(file, location)
-      end
+      @connection.chdir(location) unless location.nil?
+      @connection.put(file, File.basename(file))
+    end
+    
+    
+    # Get a file off of the server
+    def get(remote, local, location = nil)
+      @connection.chdir(location) unless location.nil?
+      @connection.get(remote, "#{local}/#{File.basename(remote)}")
     end
     
     
@@ -86,7 +87,7 @@ module Akamaized
     # Calls the delete method, however, will raise an exception if there was an issue
     # whereas "delete" itself will swallow all errors
     def delete!(file, location = nil)
-      raise delete_error(file) unless delete(file, location)
+      raise DeleteError.new(file) unless delete(file, location)
     end
     
   end
