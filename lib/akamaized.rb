@@ -1,2 +1,2 @@
-require "akamaized/exceptions"
-require "akamaized/connections"
+require "akamaized/exception"
+require "akamaized/connection"
