@@ -10,6 +10,7 @@ describe Akamaized do
   
   before(:each) do
     @config = YAML::load(File.open(File.expand_path("../../config/akamai.yml", __FILE__)))
+    
   end
   
   it "should not connect without valid credentials" do
