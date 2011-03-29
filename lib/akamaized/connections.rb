@@ -14,10 +14,10 @@ module Akamaized
         base_dir: nil
       }.merge(opts)
       
-      self.username = opts["username"]
-      self.password = opts["password"]
-      self.host = opts["host"]
-      self.base_dir = opts["base_dir"]
+      self.username = opts[:username]
+      self.password = opts[:password]
+      self.host = opts[:host]
+      self.base_dir = opts[:base_dir]
     end
     
   end
