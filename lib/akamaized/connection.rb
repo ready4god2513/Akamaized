@@ -37,7 +37,7 @@ module Akamaized
         @connection = Net::FTP.new(@config.host)
         @connection.passive = true
         @connection.login(@config.username, @config.password)
-        @connection.chdir(@config.base_dir) if @config.base_dir
+        @connection.chdir(@config.base_dir) unless @config.base_dir.blank?
       rescue IOError, SystemCallError, Net::FTPError => e
         raise ConnectionError.new(e.message)
       end
