@@ -4,20 +4,22 @@ require "net/ftp"
 module Akamaized
   
   class Config
-    attr_accessor :username, :password, :host, :base_dir
+    attr_accessor :username, :password, :host, :base_dir, :passive
     
     def initialize(opts = {})
       opts = {
         :username => "",
         :password => "",
         :host => "",
-        :base_dir => ""
+        :base_dir => "",
+        :passive => false
       }.merge(opts)
       
       self.username = opts[:username]
       self.password = opts[:password]
       self.host = opts[:host]
       self.base_dir = opts[:base_dir]
+      self.passive = opts[:passive]
     end
     
   end
@@ -35,7 +37,7 @@ module Akamaized
     def create_connection
       begin
         @connection = Net::FTP.new(@config.host)
-        @connection.passive = true
+        @connection.passive = @config.passive
         @connection.login(@config.username, @config.password)
         @connection.chdir(@config.base_dir) unless @config.base_dir.blank?
       rescue IOError, SystemCallError, Net::FTPError => e
